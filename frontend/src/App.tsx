@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { LoadEnvFile, SaveEnvFile } from '../wailsjs/go/main/App'
+import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
 import { EnvVariable } from './models'
+import { WindowSetTitle } from '../wailsjs/runtime/runtime'
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [variables, setVariables] = useState<EnvVariable[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
 
@@ -44,9 +47,15 @@ function App() {
     setVariables(newVariables)
   }
 
+  useEffect(() => {
+    EventsOn('toggle-sidebar', () => {
+        setIsMenuOpen(prev => !prev);
+    });
+  }, []);
+
   return (
     <div className="app-container">
-      <div className="sidebar">
+      <div className={`sidebar ${isMenuOpen ? 'open' : 'closed'}`}>
         <div className="menu-tabs">
           {menuTabs.map(tab => (
             <div
@@ -67,7 +76,7 @@ function App() {
         </div>
       </div>
       
-      <div className="main-content">
+      <div className={`main-content ${!isMenuOpen ? 'expanded' : ''}`}>
         <div className="content-header">
           {menuTabs.find(tab => tab.id === activeTab)?.name}
         </div>
