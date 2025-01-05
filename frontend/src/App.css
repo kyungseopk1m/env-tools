@@ -57,3 +57,146 @@
     border: none;
     background-color: rgba(255, 255, 255, 1);
 }
+
+.app-container {
+  display: flex;
+  height: 660px;
+  background-color: #ffffff;
+}
+
+.sidebar {
+  width: 200px;
+  height: 660px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-tabs {
+  padding: 16px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.menu-tab {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.menu-tab.active {
+  background-color: #e0e0e0;
+  font-weight: 500;
+}
+
+.menu-tab:hover:not(.active) {
+  background-color: #eaeaea;
+}
+
+.menu-tab-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.file-actions {
+  padding: 16px;
+}
+
+.main-content {
+  width: 680px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-header {
+  width: 680px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.search-bar {
+  margin-bottom: 16px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.env-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.env-item input {
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.env-item input:first-child {
+  width: 40%;
+}
+
+.env-item input:last-child {
+  width: 60%;
+}
+
+.file-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.file-actions button {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.file-actions button:hover {
+  background-color: #0056b3;
+}
+
+.file-info {
+  font-size: 12px;
+  color: #666;
+  padding: 8px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.file-info p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

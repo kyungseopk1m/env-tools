@@ -1,11 +1,20 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import { LoadEnvFile, SaveEnvFile } from '../wailsjs/go/main/App'
 import { EnvList } from './components/EnvList'
 import { EnvVariable } from './models'
 
 function App() {
-  const [variables, setVariables] = useState<EnvVariable[]>([])
+  const [activeTab, setActiveTab] = useState('home');
+  const [variables, setVariables] = useState<EnvVariable[]>([]);
+  const [currentFile, setCurrentFile] = useState<string>('');
+
+  const menuTabs = [
+    { id: 'home', name: '홈' },
+    { id: 'project', name: '프로젝트' },
+    { id: 'settings', name: '설정' },
+    { id: 'info', name: '정보' }
+  ];
 
   const handleFileOpen = async () => {
     try {
@@ -36,17 +45,44 @@ function App() {
   }
 
   return (
-    <div className="container">
-      <h1>ENV Editor</h1>
-      <div className="buttons">
-        <button onClick={handleFileOpen}>Open .env</button>
-        <button onClick={handleSave}>Save</button>
+    <div className="app-container">
+      <div className="sidebar">
+        <div className="menu-tabs">
+          {menuTabs.map(tab => (
+            <div
+              key={tab.id}
+              className={`menu-tab ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.name}
+            </div>
+          ))}
+        </div>
+        <div className="file-actions">
+          <button onClick={handleFileOpen}>파일 열기</button>
+          <button onClick={handleSave}>저장</button>
+        </div>
+        <div className="file-info">
+          {currentFile && <p>현재 파일: {currentFile}</p>}
+        </div>
       </div>
-      <EnvList
-        variables={variables}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      
+      <div className="main-content">
+        <div className="content-header">
+          {menuTabs.find(tab => tab.id === activeTab)?.name}
+        </div>
+        <div className="search-bar">
+          <input type="text" placeholder="환경 변수 검색..." />
+        </div>
+        <div className="env-list">
+          {variables.map((variable, index) => (
+            <div key={index} className="env-item">
+              <input value={variable.key} />
+              <input value={variable.value} />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
