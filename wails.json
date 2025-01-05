@@ -6,6 +6,12 @@
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
+  "wails": {
+    "titleBar": true,
+    "width": 880,
+    "height": 660,
+    "transparent": true
+  },
   "author": {
     "name": "kyungseopk1m",
     "email": "kks0919@kakao.com"

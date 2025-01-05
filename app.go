@@ -6,6 +6,8 @@ import (
 
 	"github.com/kyungseopk1m/env-tools/app/env"
 	"github.com/kyungseopk1m/env-tools/app/models"
+	// "github.com/wailsapp/wails/v2/pkg/menu"
+	// "github.com/wailsapp/wails/v2/pkg/menu/keys"
 )
 
 // App struct
@@ -43,3 +45,14 @@ func (a *App) SaveEnvFile(filePath string, variables []models.EnvVariable) error
 	}
 	return nil
 }
+
+// createMenu creates the application menu
+// func (a *App) createMenu() *menu.Menu {
+// 	appMenu := menu.NewMenu()
+	
+// 	fileMenu := appMenu.AddSubmenu("File")
+// 	fileMenu.AddText("Open", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {})
+// 	fileMenu.AddText("Save", keys.CmdOrCtrl("s"), func(_ *menu.CallbackData) {})
+	
+// 	return appMenu
+// }
