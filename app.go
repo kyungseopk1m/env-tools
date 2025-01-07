@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/kyungseopk1m/env-tools/app/env"
 	"github.com/kyungseopk1m/env-tools/app/models"
+	"github.com/kyungseopk1m/env-tools/app/storage"
 	// "github.com/wailsapp/wails/v2/pkg/menu"
 	// "github.com/wailsapp/wails/v2/pkg/menu/keys"
 )
@@ -56,3 +58,31 @@ func (a *App) SaveEnvFile(filePath string, variables []models.EnvVariable) error
 	
 // 	return appMenu
 // }
+
+func (a *App) AddToHistory(filePath string, description string) error {
+    histories, err := storage.LoadHistory()
+    if err != nil {
+        return err
+    }
+
+    newHistory := models.EnvHistory{
+        FilePath:    filePath,
+        LastOpened:  time.Now(),
+        Description: description,
+    }
+
+    // 중복 항목 제거
+    for i, h := range histories {
+        if h.FilePath == filePath {
+            histories = append(histories[:i], histories[i+1:]...)
+            break
+        }
+    }
+
+    histories = append([]models.EnvHistory{newHistory}, histories...)
+    return storage.SaveHistory(histories)
+}
+
+func (a *App) GetHistory() ([]models.EnvHistory, error) {
+    return storage.LoadHistory()
+}

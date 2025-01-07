@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import { LoadEnvFile, SaveEnvFile } from '../wailsjs/go/main/App'
+import { LoadEnvFile, SaveEnvFile, GetHistory } from '../wailsjs/go/main/App'
 import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
-import { EnvVariable } from './models'
+import { EnvHistory, EnvVariable } from './models'
 import { WindowSetTitle } from '../wailsjs/runtime/runtime'
 
 function App() {
@@ -11,6 +11,23 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [variables, setVariables] = useState<EnvVariable[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
+  // 히스토리 상태 추가
+const [history, setHistory] = useState<EnvHistory[]>([]); // ENV 파일 열기 히스토리를 저장하는 상태
+
+// useEffect 추가 (기존 useEffect 근처에 배치)
+useEffect(() => {
+    // 컴포넌트가 마운트될 때 히스토리 데이터를 로드
+    const loadHistory = async () => {
+        try {
+            const result = await GetHistory(); // 백엔드에서 히스토리 데이터 가져오기
+            setHistory(result); // 가져온 히스토리를 상태에 저장
+        } catch (err) {
+            console.error('Error loading history:', err);
+        }
+    };
+    
+    loadHistory(); // 히스토리 로드 함수 실행
+}, []); // 빈 배열을 전달하여 컴포넌트 마운트 시에만 실행
 
   const menuTabs = [
     { id: 'home', name: '홈' },
@@ -21,12 +38,20 @@ function App() {
 
   const handleFileOpen = async () => {
     try {
-      const result = await LoadEnvFile('.env')
-      setVariables(result)
+        const result = await LoadEnvFile('.env');
+        setVariables(result);
+        setCurrentFile('.env'); // 현재 파일 경로 저장
+        
+        // 파일을 열 때마다 히스토리에 추가
+        await AddToHistory('.env', '환경 변수 파일'); // 백엔드에 히스토리 저장
+        
+        // 히스토리 상태 업데이트를 위해 다시 로드
+        const updatedHistory = await GetHistory();
+        setHistory(updatedHistory);
     } catch (err) {
-      console.error('Error loading file:', err)
+        console.error('Error loading file:', err);
     }
-  }
+};
 
   const handleSave = async () => {
     try {
@@ -97,3 +122,7 @@ function App() {
 }
 
 export default App
+function AddToHistory(arg0: string, arg1: string) {
+  throw new Error('Function not implemented.')
+}
+
