@@ -19,28 +19,45 @@ func ParseEnvFile(filePath string) ([]models.EnvVariable, error) {
 
 	var variables []models.EnvVariable
 	scanner := bufio.NewScanner(file)
-	
+
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		if line == "" || strings.HasPrefix(line, "#") {
+		if line == "" {
 			continue
 		}
 
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) != 2 {
-			continue
+		var comment string
+		var envKeyAndValue string
+		if inx := strings.Index(line, "#"); inx != -1 {
+			comment = strings.TrimSpace(line[inx+1:])
+			envKeyAndValue = strings.TrimSpace(line[:inx])
 		}
 
-		key := strings.TrimSpace(parts[0])
-		value := strings.TrimSpace(parts[1])
-		
-		// Remove quotes if present
-		value = strings.Trim(value, `"'`)
+		if envKeyAndValue != "" {
+			parts := strings.SplitN(envKeyAndValue, "=", 2)
+			if len(parts) != 2 {
+				continue
+			}
 
-		variables = append(variables, models.EnvVariable{
-			Key:   key,
-			Value: value,
-		})
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+
+			// Remove quotes if present
+			value = strings.Trim(value, `"'`)
+
+			variables = append(variables, models.EnvVariable{
+				Type:  models.ENV,
+				Key:   key,
+				Value: value,
+			})
+		}
+
+		if comment != "" {
+			variables = append(variables, models.EnvVariable{
+				Type:  models.COMMENT,
+				Value: comment,
+			})
+		}
 	}
 
 	return variables, scanner.Err()
@@ -56,9 +73,16 @@ func WriteEnvFile(filePath string, variables []models.EnvVariable) error {
 
 	writer := bufio.NewWriter(file)
 	for _, v := range variables {
-		_, err := fmt.Fprintf(writer, "%s=%s\n", v.Key, v.Value)
-		if err != nil {
-			return err
+		if v.Type == models.ENV {
+			_, err := fmt.Fprintf(writer, "%s=%s\n", v.Key, v.Value)
+			if err != nil {
+				return err
+			}
+		} else {
+			_, err := fmt.Fprintf(writer, "#%s\n", v.Value)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
