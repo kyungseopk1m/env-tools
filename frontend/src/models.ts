@@ -1,7 +1,13 @@
+export enum TextType {
+    COMMENT = 0,
+    ENV = 1
+}
+
 export interface EnvVariable {
-    key: string;
+    type: TextType;
+    key?: string;
     value: string;
-} 
+}
 
 export interface EnvHistory {
     filePath: string;

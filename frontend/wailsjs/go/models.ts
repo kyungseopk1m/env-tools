@@ -36,7 +36,8 @@ export namespace models {
 		}
 	}
 	export class EnvVariable {
-	    key: string;
+	    type: number;
+	    key?: string;
 	    value: string;
 	
 	    static createFrom(source: any = {}) {
@@ -45,6 +46,7 @@ export namespace models {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.type = source["type"];
 	        this.key = source["key"];
 	        this.value = source["value"];
 	    }

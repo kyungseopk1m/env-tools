@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import { LoadEnvFile, SaveEnvFile, GetHistory } from '../wailsjs/go/main/App'
+import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory } from '../wailsjs/go/main/App'
 import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
 import { EnvHistory, EnvVariable } from './models'
@@ -122,7 +122,4 @@ useEffect(() => {
 }
 
 export default App
-function AddToHistory(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.')
-}
 
