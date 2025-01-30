@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory } from '../wailsjs/go/main/App'
+import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory, OpenFileDialog } from '../wailsjs/go/main/App'
 import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
 import { EnvHistory, EnvVariable } from './models'
 import { WindowSetTitle } from '../wailsjs/runtime/runtime'
+import { Home } from './components/Home'
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -38,14 +39,14 @@ useEffect(() => {
 
   const handleFileOpen = async () => {
     try {
-        const result = await LoadEnvFile('.env');
+        const filePath = await OpenFileDialog();
+        if (!filePath) return;  // 사용자가 취소한 경우
+
+        const result = await LoadEnvFile(filePath);
         setVariables(result);
-        setCurrentFile('.env'); // 현재 파일 경로 저장
+        setCurrentFile(filePath);
         
-        // 파일을 열 때마다 히스토리에 추가
-        await AddToHistory('.env', '환경 변수 파일'); // 백엔드에 히스토리 저장
-        
-        // 히스토리 상태 업데이트를 위해 다시 로드
+        await AddToHistory(filePath, '환경 변수 파일');
         const updatedHistory = await GetHistory();
         setHistory(updatedHistory);
     } catch (err) {
@@ -92,10 +93,6 @@ useEffect(() => {
             </div>
           ))}
         </div>
-        <div className="file-actions">
-          <button onClick={handleFileOpen}>파일 열기</button>
-          <button onClick={handleSave}>저장</button>
-        </div>
         <div className="file-info">
           {currentFile && <p>현재 파일: {currentFile}</p>}
         </div>
@@ -105,17 +102,28 @@ useEffect(() => {
         <div className="content-header">
           {menuTabs.find(tab => tab.id === activeTab)?.name}
         </div>
-        <div className="search-bar">
-          <input type="text" placeholder="환경 변수 검색..." />
-        </div>
-        <div className="env-list">
-          {variables.map((variable, index) => (
-            <div key={index} className="env-item">
-              <input value={variable.key} />
-              <input value={variable.value} />
+        
+        {activeTab === 'home' ? (
+          <Home 
+            onImport={handleFileOpen}
+            onNewFile={() => {/* 새 파일 생성 로직 */}}
+            recentHistory={history}
+          />
+        ) : (
+          <>
+            <div className="search-bar">
+              <input type="text" placeholder="환경 변수 검색..." />
             </div>
-          ))}
-        </div>
+            <div className="env-list">
+              {variables.map((variable, index) => (
+                <div key={index} className="env-item">
+                  <input value={variable.key} />
+                  <input value={variable.value} />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
