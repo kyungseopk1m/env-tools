@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/kyungseopk1m/env-tools/app/utils"
 	"time"
 
 	"github.com/kyungseopk1m/env-tools/app/env"
@@ -48,41 +49,45 @@ func (a *App) SaveEnvFile(filePath string, variables []models.EnvVariable) error
 	return nil
 }
 
+func (a *App) GetProjectPath() (string, error) {
+	return utils.SelectFileDialog(a.ctx)
+}
+
 // createMenu creates the application menu
 // func (a *App) createMenu() *menu.Menu {
 // 	appMenu := menu.NewMenu()
-	
+
 // 	fileMenu := appMenu.AddSubmenu("File")
 // 	fileMenu.AddText("Open", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {})
 // 	fileMenu.AddText("Save", keys.CmdOrCtrl("s"), func(_ *menu.CallbackData) {})
-	
+
 // 	return appMenu
 // }
 
 func (a *App) AddToHistory(filePath string, description string) error {
-    histories, err := storage.LoadHistory()
-    if err != nil {
-        return err
-    }
+	histories, err := storage.LoadHistory()
+	if err != nil {
+		return err
+	}
 
-    newHistory := models.EnvHistory{
-        FilePath:    filePath,
-        LastOpened:  time.Now(),
-        Description: description,
-    }
+	newHistory := models.EnvHistory{
+		FilePath:    filePath,
+		LastOpened:  time.Now(),
+		Description: description,
+	}
 
-    // 중복 항목 제거
-    for i, h := range histories {
-        if h.FilePath == filePath {
-            histories = append(histories[:i], histories[i+1:]...)
-            break
-        }
-    }
+	// 중복 항목 제거
+	for i, h := range histories {
+		if h.FilePath == filePath {
+			histories = append(histories[:i], histories[i+1:]...)
+			break
+		}
+	}
 
-    histories = append([]models.EnvHistory{newHistory}, histories...)
-    return storage.SaveHistory(histories)
+	histories = append([]models.EnvHistory{newHistory}, histories...)
+	return storage.SaveHistory(histories)
 }
 
 func (a *App) GetHistory() ([]models.EnvHistory, error) {
-    return storage.LoadHistory()
+	return storage.LoadHistory()
 }

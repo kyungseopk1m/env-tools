@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory } from '../wailsjs/go/main/App'
+import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory, GetProjectPath } from '../wailsjs/go/main/App'
 import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
 import { EnvHistory, EnvVariable } from './models'
@@ -11,6 +11,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [variables, setVariables] = useState<EnvVariable[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
+  const [projectPath, setProjectPath] = useState<string>('');
   // 히스토리 상태 추가
 const [history, setHistory] = useState<EnvHistory[]>([]); // ENV 파일 열기 히스토리를 저장하는 상태
 
@@ -36,15 +37,30 @@ useEffect(() => {
     { id: 'info', name: '정보' }
   ];
 
+  const handleProjectPathOpen = async () => {
+      try {
+          const result = await GetProjectPath();
+          console.log('Project path:', result);
+          setProjectPath(result);
+
+          await AddToHistory(result, '프로젝트 경로'); // 백엔드에 히스토리 저장
+
+          const updatedHistory = await GetHistory();
+          setHistory(updatedHistory);
+      } catch (err){
+            console.error('Error loading project path:', err);
+      }
+  };
+
   const handleFileOpen = async () => {
     try {
         const result = await LoadEnvFile('.env');
         setVariables(result);
         setCurrentFile('.env'); // 현재 파일 경로 저장
-        
+
         // 파일을 열 때마다 히스토리에 추가
         await AddToHistory('.env', '환경 변수 파일'); // 백엔드에 히스토리 저장
-        
+
         // 히스토리 상태 업데이트를 위해 다시 로드
         const updatedHistory = await GetHistory();
         setHistory(updatedHistory);
@@ -93,7 +109,7 @@ useEffect(() => {
           ))}
         </div>
         <div className="file-actions">
-          <button onClick={handleFileOpen}>파일 열기</button>
+          <button onClick={handleProjectPathOpen}>파일 열기</button>
           <button onClick={handleSave}>저장</button>
         </div>
         <div className="file-info">

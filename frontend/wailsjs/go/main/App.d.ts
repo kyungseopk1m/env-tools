@@ -6,6 +6,8 @@ export function AddToHistory(arg1:string,arg2:string):Promise<void>;
 
 export function GetHistory():Promise<Array<models.EnvHistory>>;
 
+export function GetProjectPath():Promise<string>;
+
 export function LoadEnvFile(arg1:string):Promise<Array<models.EnvVariable>>;
 
 export function SaveEnvFile(arg1:string,arg2:Array<models.EnvVariable>):Promise<void>;
