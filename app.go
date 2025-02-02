@@ -49,8 +49,24 @@ func (a *App) SaveEnvFile(filePath string, variables []models.EnvVariable) error
 	return nil
 }
 
-func (a *App) GetProjectPath() (string, error) {
-	return utils.SelectFileDialog(a.ctx)
+func (a *App) GetProjectPath() (*string, error) {
+	result, err := utils.SelectFileDialog(a.ctx)
+	if err != nil {
+		fmt.Printf("Error Get Project Path: %v\n", err)
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (a *App) OpenFolder(folderPath string) error {
+	err := utils.OpenFolder(folderPath)
+	if err != nil {
+		fmt.Printf("Error Open Folder: %v\n", err)
+		return err
+	}
+
+	return nil
 }
 
 // createMenu creates the application menu
