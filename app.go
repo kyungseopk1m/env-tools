@@ -9,6 +9,7 @@ import (
 	"github.com/kyungseopk1m/env-tools/app/env"
 	"github.com/kyungseopk1m/env-tools/app/models"
 	"github.com/kyungseopk1m/env-tools/app/storage"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	// "github.com/wailsapp/wails/v2/pkg/menu"
 	// "github.com/wailsapp/wails/v2/pkg/menu/keys"
 )
@@ -29,8 +30,31 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+// OpenFileDialog opens a file dialog and returns the selected file path
+func (a *App) OpenFileDialog() (string, error) {
+	dialog, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "ENV 파일 선택",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "ENV 파일 (*.env)",
+				Pattern:     "*.env",
+			},
+			{
+				DisplayName: "모든 파일 (*.*)",
+				Pattern:     "*.*",
+			},
+		},
+	})
+
+	return dialog, err
+}
+
 // LoadEnvFile loads and parses a .env file
 func (a *App) LoadEnvFile(filePath string) ([]models.EnvVariable, error) {
+	if filePath == "" {
+		return nil, fmt.Errorf("file path is empty")
+	}
+
 	variables, err := env.ParseEnvFile(filePath)
 	if err != nil {
 		fmt.Printf("Error loading .env file: %v\n", err)
