@@ -12,6 +12,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [variables, setVariables] = useState<EnvVariable[]>([]);
   const [currentFile, setCurrentFile] = useState<string>('');
+  const [projectPath, setProjectPath] = useState<string>('');
   // 히스토리 상태 추가
 const [history, setHistory] = useState<EnvHistory[]>([]); // ENV 파일 열기 히스토리를 저장하는 상태
 
@@ -36,6 +37,21 @@ useEffect(() => {
     { id: 'settings', name: '설정' },
     { id: 'info', name: '정보' }
   ];
+
+  const handleProjectPathOpen = async () => {
+      try {
+          const result = await GetProjectPath();
+          console.log('Project path:', result);
+          setProjectPath(result);
+
+          await AddToHistory(result, '프로젝트 경로'); // 백엔드에 히스토리 저장
+
+          const updatedHistory = await GetHistory();
+          setHistory(updatedHistory);
+      } catch (err){
+            console.error('Error loading project path:', err);
+      }
+  };
 
   const handleFileOpen = async () => {
     try {

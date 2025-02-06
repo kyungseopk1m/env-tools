@@ -10,6 +10,10 @@ export function GetHistory() {
   return window['go']['main']['App']['GetHistory']();
 }
 
+export function GetProjectPath() {
+  return window['go']['main']['App']['GetProjectPath']();
+}
+
 export function LoadEnvFile(arg1) {
   return window['go']['main']['App']['LoadEnvFile'](arg1);
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/kyungseopk1m/env-tools/app/utils"
 	"time"
 
 	"github.com/kyungseopk1m/env-tools/app/env"
@@ -69,6 +70,26 @@ func (a *App) SaveEnvFile(filePath string, variables []models.EnvVariable) error
 		fmt.Printf("Error saving .env file: %v\n", err)
 		return err
 	}
+	return nil
+}
+
+func (a *App) GetProjectPath() (*string, error) {
+	result, err := utils.SelectFileDialog(a.ctx)
+	if err != nil {
+		fmt.Printf("Error Get Project Path: %v\n", err)
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (a *App) OpenFolder(folderPath string) error {
+	err := utils.OpenFolder(folderPath)
+	if err != nil {
+		fmt.Printf("Error Open Folder: %v\n", err)
+		return err
+	}
+
 	return nil
 }
 
