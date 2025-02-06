@@ -6,6 +6,7 @@ import { EnvList } from './components/EnvList'
 import { EnvHistory, EnvVariable } from './models'
 import { WindowSetTitle } from '../wailsjs/runtime/runtime'
 import { Home } from './components/Home'
+import { Settings } from './components/Settings'
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -99,16 +100,18 @@ useEffect(() => {
       </div>
       
       <div className={`main-content ${!isMenuOpen ? 'expanded' : ''}`}>
-        <div className="content-header">
+        {/* 우측 상단 메뉴바 */}
+        {/* <div className="content-header">
           {menuTabs.find(tab => tab.id === activeTab)?.name}
-        </div>
-        
+        </div> */}
         {activeTab === 'home' ? (
           <Home 
             onImport={handleFileOpen}
             onNewFile={() => {/* 새 파일 생성 로직 */}}
             recentHistory={history}
           />
+        ) : activeTab === 'settings' ? (
+          <Settings />
         ) : (
           <>
             <div className="search-bar">
