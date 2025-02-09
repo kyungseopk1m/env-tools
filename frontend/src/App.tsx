@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory, OpenFileDialog } from '../wailsjs/go/main/App'
+import { LoadEnvFile, SaveEnvFile, GetHistory, AddToHistory, OpenFileDialog, GetProjectPath } from '../wailsjs/go/main/App'
 import { EventsOn } from '../wailsjs/runtime'
 import { EnvList } from './components/EnvList'
 import { EnvHistory, EnvVariable } from './models'
